@@ -19,7 +19,7 @@ object Main extends App {
   println("Hello World!")
   val configAccessor: IotKafkaConfigAcessor = IotKafkaConfig()
   val consumerConfig: Config = configAccessor.kafkaEventConsumer
-  IotEventListener(consumerConfig, "sensortopic")
+  IotEventListener(consumerConfig, "sensortopicjson")
   val bindingFuture = Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
 
 }
