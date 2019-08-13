@@ -8,7 +8,7 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import ch.seibertec.iot.config.{IotKafkaConfig, IotKafkaConfigAcessor}
-import ch.seibertec.iot.consumer.IotEventListener
+import ch.seibertec.iot.consumer.{AverageTemperatureStreamBuilder, IotEventListener}
 import com.typesafe.config.Config
 
 object Main extends App {
@@ -19,7 +19,9 @@ object Main extends App {
   println("Hello World!")
   val configAccessor: IotKafkaConfigAcessor = IotKafkaConfig()
   val consumerConfig: Config = configAccessor.kafkaEventConsumer
-  IotEventListener(consumerConfig, "sensortopicjson")
+  private val sensortopicjson = "sensortopicjson"
+  IotEventListener(consumerConfig, sensortopicjson)
+  new AverageTemperatureStreamBuilder(sensortopicjson, configAccessor).newStream
   val bindingFuture = Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
 
 }
