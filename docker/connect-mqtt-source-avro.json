@@ -5,7 +5,7 @@
         "tasks.max": 1,
         "mqtt.server.uri": "tcp://ponte:1883",
         "mqtt.topics": "tele/sonoff/SENSOR",
-        "kafka.topic": "sensortopic",
+        "kafka.topic": "sensortopicavro",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
         "value.converter": "io.confluent.connect.avro.AvroConverter",
         "value.converter.schema.registry.url": "http://schema-registry:8081",
