@@ -1,10 +1,10 @@
 {
-    "name": "mqtt-source",
+    "name": "mqtt-source-avro",
     "config": {
         "connector.class": "io.confluent.connect.mqtt.MqttSourceConnector",
         "tasks.max": 1,
         "mqtt.server.uri": "tcp://ponte:1883",
-        "mqtt.topics": "tele/sonoff/SENSOR",
+        "mqtt.topics": "tele/sonoffWaedi/SENSOR",
         "kafka.topic": "sensortopicavro",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
         "value.converter": "io.confluent.connect.avro.AvroConverter",
