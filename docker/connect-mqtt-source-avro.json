@@ -1,0 +1,15 @@
+{
+    "name": "mqtt-source",
+    "config": {
+        "connector.class": "io.confluent.connect.mqtt.MqttSourceConnector",
+        "tasks.max": 1,
+        "mqtt.server.uri": "tcp://ponte:1883",
+        "mqtt.topics": "tele/sonoff/SENSOR",
+        "kafka.topic": "sensortopic",
+        "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+        "value.converter": "io.confluent.connect.avro.AvroConverter",
+        "value.converter.schema.registry.url": "http://schema-registry:8081",
+        "confluent.topic.bootstrap.servers": "kafka:9092",
+        "confluent.topic.replication.factor": 1
+    }
+}
