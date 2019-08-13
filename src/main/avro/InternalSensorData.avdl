@@ -1,0 +1,31 @@
+@namespace("ch.seibertec.iot.events.internal")
+protocol InternalSensorData {
+
+  import idl "./Sensor.avdl";
+
+  record SensorData {
+    union { null, int}  day = null;
+    union { null, int}  month = null;
+    union { null, int}  year = null;
+    union { null, string}  temperature = null;
+  }
+
+  record AggregatedSensorData {
+
+    array<SensorData> sensorDataOfMonth;
+    union { null, int}  month = null;
+    union { null, int}  year = null;
+    union { null, int}  day = null;
+
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumYearly = null;
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumYearly = null;
+
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumMonthly = null;
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumMonthly = null;
+
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumDaily = null;
+    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumDaily = null;
+    union { null, string}  averageTemperatureOfMonth = null;
+  }
+
+}
