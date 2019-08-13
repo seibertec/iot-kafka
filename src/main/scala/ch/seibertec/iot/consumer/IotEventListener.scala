@@ -6,9 +6,11 @@ import akka.actor.{Actor, ActorLogging, ActorRef, ActorSystem, Props, Terminated
 import cakesolutions.kafka.KafkaConsumer
 import cakesolutions.kafka.akka.KafkaConsumerActor.{Confirm, Subscribe}
 import cakesolutions.kafka.akka.{ConsumerRecords, KafkaConsumerActor}
-import com.typesafe.config.{Config, ConfigFactory}
+import ch.seibertec.iot.domain.SensorDataMessage
+import com.typesafe.config.Config
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
 import org.apache.kafka.common.serialization.StringDeserializer
+import play.api.libs.json.Json
 
 import scala.concurrent.duration._
 
@@ -41,7 +43,7 @@ class IotEventListener(topic: String,
                              kafkaConfig: KafkaConsumer.Conf[String, String],
                              actorConfig: KafkaConsumerActor.Conf) extends Actor with ActorLogging {
 
-  private var sensorData: List[String] = Nil
+  private var sensorData: List[SensorDataMessage] = Nil
   private val recordsExt = ConsumerRecords.extractor[String, String]
 
   private val consumer = context.actorOf(
@@ -63,10 +65,13 @@ class IotEventListener(topic: String,
 
   }
 
-  private def processRecords(records: Seq[(Option[String], String)]) =
+  private def processRecords(records: Seq[(Option[String], String)]) ={
+    import ch.seibertec.iot.domain.SensorDataMessage._
     records.foreach { case (key, value) =>
-      sensorData= value::sensorData
       println(s"Received [$value]")
+      val sendorDataMessage= Json.parse(value).as[SensorDataMessage]
+      sensorData= sendorDataMessage::sensorData
     }
+  }
 }
 
