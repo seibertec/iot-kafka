@@ -21,7 +21,7 @@ object Main extends App {
 
   val configAccessor: IotKafkaConfigAcessor = IotKafkaConfig()
   val consumerConfig: Config = configAccessor.kafkaEventConsumer
-  private val sensortopicjson = "sensortopicjson"
+  private val sensortopicjson = "sensor"
   IotEventListener(consumerConfig, sensortopicjson)
   new AverageTemperatureStreamBuilder(sensortopicjson, configAccessor).newStream
   val bindingFuture =

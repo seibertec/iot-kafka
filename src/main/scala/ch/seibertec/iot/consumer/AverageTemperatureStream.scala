@@ -45,25 +45,32 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
   }
 
   def newMinimumYearly(accumulatorForDate: AggregatedSensorData,
-                       sensorData: SensorData): Option[SensorData] = ???
+                       sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newMaximumYearly(accumulatorForDate: AggregatedSensorData,
-                       sensorData: SensorData): Option[SensorData] = ???
+                       sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newMinimumMonthly(accumulatorForDate: AggregatedSensorData,
-                        sensorData: SensorData): Option[SensorData] = ???
+                        sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newMaximumMonthly(accumulatorForDate: AggregatedSensorData,
-                        sensorData: SensorData): Option[SensorData] = ???
+                        sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newMinimumDaily(accumulatorForDate: AggregatedSensorData,
-                      sensorData: SensorData): Option[SensorData] = ???
+                      sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newMaximumDaily(accumulatorForDate: AggregatedSensorData,
-                      sensorData: SensorData): Option[SensorData] = ???
+                      sensorData: SensorData): Option[SensorData] =
+    Some(sensorData) //TODO fix this code
 
   def newAverageTemperature(accumulatorForDate: AggregatedSensorData,
-                            sensorData: SensorData): Option[String] = ???
+                            sensorData: SensorData): Option[String] =
+    sensorData.temperature //TODO fix this code
 
   override def build(builder: StreamsBuilder): Unit = {
 
@@ -84,20 +91,24 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
       .groupByKey
       .aggregate(AggregatedSensorData(Seq.empty))(
         (k, v, acc) => {
-          val accumulatorForDate =
-            getAccumulatorForMonthAndYear(acc, v)
-          accumulatorForDate.copy(
-            sensorDataOfMonth = acc.sensorDataOfMonth :+ v,
-            minimumYearly = newMinimumYearly(accumulatorForDate, v),
-            maximumYearly = newMaximumYearly(accumulatorForDate, v),
-            minimumMonthly = newMinimumMonthly(accumulatorForDate, v),
-            maximumMonthly = newMaximumMonthly(accumulatorForDate, v),
-            minimumDaily = newMinimumDaily(accumulatorForDate, v),
-            maximumDaily = newMaximumDaily(accumulatorForDate, v),
-            averageTemperatureOfMonth =
-              newAverageTemperature(accumulatorForDate, v)
-          )
+          val accumulatorForDate = getAccumulatorForMonthAndYear(acc, v)
+          val accumulatorForDateWithTimeSeries = accumulatorForDate.copy(
+            sensorDataOfMonth = accumulatorForDate.sensorDataOfMonth :+ v)
 
+          accumulatorForDateWithTimeSeries.copy(
+            minimumYearly =
+              newMinimumYearly(accumulatorForDateWithTimeSeries, v),
+            maximumYearly =
+              newMaximumYearly(accumulatorForDateWithTimeSeries, v),
+            minimumMonthly =
+              newMinimumMonthly(accumulatorForDateWithTimeSeries, v),
+            maximumMonthly =
+              newMaximumMonthly(accumulatorForDateWithTimeSeries, v),
+            minimumDaily = newMinimumDaily(accumulatorForDateWithTimeSeries, v),
+            maximumDaily = newMaximumDaily(accumulatorForDateWithTimeSeries, v),
+            averageTemperatureOfMonth =
+              newAverageTemperature(accumulatorForDateWithTimeSeries, v)
+          )
         }
       )
       .toStream
@@ -173,7 +184,8 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
           minimumMonthly = Some(minMax),
           maximumDaily = Some(minMax),
           minimumDaily = Some(minMax),
-          averageTemperatureOfMonth = Some(temperature)
+          averageTemperatureOfMonth = Some(temperature),
+          sensorDataOfMonth = Nil
         )
       case AggregatedSensorData(_,
                                 Some(m),
@@ -203,11 +215,14 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
       year = Some(year),
       month = Some(month),
       day = Some(dayOfMonth),
+      minimumYearly = Some(minMax),
+      maximumYearly = Some(minMax),
       maximumMonthly = Some(minMax),
       minimumMonthly = Some(minMax),
       maximumDaily = Some(minMax),
       minimumDaily = Some(minMax),
-      averageTemperatureOfMonth = Some(temperature)
+      averageTemperatureOfMonth = Some(temperature),
+      sensorDataOfMonth = Nil
     )
   }
 
