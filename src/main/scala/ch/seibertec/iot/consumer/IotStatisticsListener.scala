@@ -60,7 +60,7 @@ class IotStatisticsListener(
     extends Actor
     with ActorLogging {
 
-  private var statisticsData: List[TemperatureEvent] = Nil
+  private var statisticsData: Map[String, List[TemperatureEvent]] = Map.empty.withDefaultValue(List.empty[TemperatureEvent])
   private val recordsExt = ConsumerRecords.extractor[String, TemperatureEvent]
 
   private val consumer = context.actorOf(
@@ -88,7 +88,8 @@ class IotStatisticsListener(
     records.foreach {
       case (key, value) =>
         println(s"Received [$value]")
-        statisticsData = value :: statisticsData
+        val keyString = key.getOrElse("UNKNOWN")
+        statisticsData = statisticsData + (keyString-> (value :: statisticsData(keyString)))
     }
   }
 }
