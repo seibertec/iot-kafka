@@ -2,6 +2,8 @@ package ch.seibertec.iot
 
 import java.time.LocalDateTime
 
+import akka.actor.ActorRef
+import akka.pattern.ask
 import akka.event.Logging
 import akka.http.scaladsl.model.{
   ContentTypes,
@@ -10,10 +12,25 @@ import akka.http.scaladsl.model.{
   StatusCodes
 }
 import akka.http.scaladsl.server.Route
+import akka.util.Timeout
+import java.util.concurrent.TimeUnit._
 
-class WebRoute {
+import ch.seibertec.iot.consumer.IotEventListener.{
+  Last12Month,
+  LatestValue,
+  NoData
+}
+import ch.seibertec.iot.domain.{SensorData, SensorDataMessage}
+import de.heikoseeberger.akkahttpplayjson.PlayJsonSupport
+
+import scala.util.Success
+
+class WebRoute(iotEventListener: ActorRef) extends PlayJsonSupport {
 
   import akka.http.scaladsl.server.Directives._
+  import SensorDataMessage._
+
+  implicit val timeout = Timeout(20, SECONDS)
 
   def route: Route =
     logRequestResult(("/", Logging.InfoLevel)) {
@@ -29,33 +46,21 @@ class WebRoute {
         } ~
         pathPrefix("data") {
           path("latest") {
-            complete(
-              s""" { "temperature": 23.567, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime
-                .now()}"} """)
+            parameter('sensorName) { sensorName =>
+              onSuccess(iotEventListener ? LatestValue(sensorName)) {
+                case NoData =>
+                  complete(StatusCodes.NotFound)
+                case s: SensorDataMessage =>
+                  complete(s)
+              }
+            }
           } ~
             path("timeseries") {
-              parameter('scope) {
-                case "last 12 month" =>
-                  complete(
-                    s"""[
-                        {  "temperature": 21, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 21.5, "tempUnit": "°C", "humidity": 79.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 22, "tempUnit": "°C", "humidity": 78.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 23, "tempUnit": "°C", "humidity": 77.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 24.567, "tempUnit": "°C", "humidity": 76.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 25.567, "tempUnit": "°C", "humidity": 75.3, "timestamp": "${LocalDateTime
-                      .now()}"},
-                        {  "temperature": 26.567, "tempUnit": "°C", "humidity": 74.3, "timestamp": "${LocalDateTime
-                      .now()}"}
-                      ]"""
-                  )
-                case x =>
-                  complete(StatusCodes.BadRequest, s"scope '$x' not supported!")
+              parameter('scope, 'sensorName) { (scope, sensorName) =>
+                onSuccess((iotEventListener ? Last12Month(scope, sensorName))
+                  .mapTo[List[SensorDataMessage]]) { res =>
+                  complete(res)
+                }
               }
             }
         }

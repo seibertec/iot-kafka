@@ -19,15 +19,17 @@ var app = new Vue({
                 url:"/data/latest",//request URL
                 type:"GET",//Request type GET/POST
                 //Send Data in form of GET/POST
-                data:{},
+                data:{
+                    sensorName: me.sensor
+                },
                 debugLog: true,
                 //CALLBACK FUNCTION with RESPONSE as argument
                 success: function(response){
                     var result = JSON.parse(response);
-                    me.temp = result.temperature;
-                    me.tempUnit = result.tempUnit;
-                    me.humidity = result.humidity;
-                    me.timestamp = result.timestamp;
+                    me.tempUnit = result.TempUnit;
+                    me.temp = result.AM2301.Temperature.toFixed(1);
+                    me.humidity = result.AM2301.Humidity.toFixed(1);
+                    me.timestamp = result.Time;
                     // alert(data);
                 },
                 errorCallback: function() {
@@ -44,7 +46,8 @@ var app = new Vue({
                 type:"GET",//Request type GET/POST
                 //Send Data in form of GET/POST
                 data:{
-                    scope: me.scope
+                    scope: me.scope,
+                    sensorName: me.sensor
                 },
                 debugLog: true,
                 //CALLBACK FUNCTION with RESPONSE as argument
@@ -54,30 +57,37 @@ var app = new Vue({
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
-                            labels: result.map(x => x.timestamp),
+                            labels: result.map(x => x.Time),
                             datasets: [
                                 {
-                                    label: 'Low Temperature in °C',
-                                    data: result.map(x => x.temperature - 5),
+                                    label: 'Temperature in °C',
+                                    data: result.map(x => x.AM2301.Temperature),
                                     borderColor: 'rgba(27,66,255,0.75)',
                                     fill: origin,
                                     // borderWidth: 1
                                 },
-                                {
-                                label: 'Medium Temperature in °C',
-                                data: result.map(x => x.temperature),
-                                fill: false,
-                                borderColor: 'rgba(25,255,42,0.95)',
-                                // borderWidth: 1
-                                },
-                                {
-                                label: 'High Temperature in °C',
-                                data: result.map(x => x.temperature + 5),
-                                borderColor: 'rgb(255,0,26)',
-                                backgroundColor: 'rgba(255,77,49,0.27)',
-                                fill: 0
-                                // borderWidth: 1
-                                },
+                                // {
+                                //     label: 'Low Temperature in °C',
+                                //     data: result.map(x => x.AM2301.Temperature - 5),
+                                //     borderColor: 'rgba(27,66,255,0.75)',
+                                //     fill: origin,
+                                //     // borderWidth: 1
+                                // },
+                                // {
+                                // label: 'Medium Temperature in °C',
+                                // data: result.map(x => x.temperature),
+                                // fill: false,
+                                // borderColor: 'rgba(25,255,42,0.95)',
+                                // // borderWidth: 1
+                                // },
+                                // {
+                                // label: 'High Temperature in °C',
+                                // data: result.map(x => x.temperature + 5),
+                                // borderColor: 'rgb(255,0,26)',
+                                // backgroundColor: 'rgba(255,77,49,0.27)',
+                                // fill: 0
+                                // // borderWidth: 1
+                                // },
                             ]
                         },
                         options: {

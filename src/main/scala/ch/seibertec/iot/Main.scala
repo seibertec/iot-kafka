@@ -25,11 +25,13 @@ object Main extends App {
   private val sensorTopic = "sensor"
   private val statisticsTopic = "TemperatureStatistics"
 
-  IotEventListener(consumerConfig, sensorTopic)
+  val iotEventListener = IotEventListener(consumerConfig, sensorTopic)
   IotStatisticsListener(consumerConfig, statisticsTopic)
   new AverageTemperatureStreamBuilder(sensorTopic, configAccessor).newStream
   val bindingFuture =
-    Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
+    Http().bindAndHandle(new WebRoute(iotEventListener).route,
+                         "localhost",
+                         8090)
 
   sys.ShutdownHookThread {
     println("Shutting ActorSysten")

@@ -1,5 +1,6 @@
 package ch.seibertec.iot.consumer
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 import akka.actor.{
@@ -13,6 +14,11 @@ import akka.actor.{
 import cakesolutions.kafka.KafkaConsumer
 import cakesolutions.kafka.akka.KafkaConsumerActor.{Confirm, Subscribe}
 import cakesolutions.kafka.akka.{ConsumerRecords, KafkaConsumerActor}
+import ch.seibertec.iot.consumer.IotEventListener.{
+  Last12Month,
+  LatestValue,
+  NoData
+}
 import ch.seibertec.iot.domain.SensorDataMessage
 import com.typesafe.config.Config
 import org.apache.kafka.clients.consumer.OffsetResetStrategy
@@ -22,6 +28,10 @@ import play.api.libs.json.Json
 import scala.concurrent.duration._
 
 object IotEventListener {
+
+  case class LatestValue(sensorName: String)
+  case class Last12Month(scope: String, sensorName: String)
+  case object NoData
 
   /*
    * Starts an ActorSystem and instantiates the below Actor that subscribes and
@@ -74,6 +84,18 @@ class IotEventListener(topic: String,
     case Terminated(s) =>
       println(s"KafkaConsumer terminated ...")
 
+    case LatestValue(sensorName) =>
+      sensorData.find(s => s.sourceTopic.contains(sensorName)) match {
+        case Some(sd) => sender ! sd
+        case None     => sender ! NoData
+      }
+
+    case Last12Month(scope, sensorName) =>
+      val nowMinus12Month = LocalDateTime.now.minusMonths(12)
+      sender ! sensorData
+        .filter(s =>
+          s.time.isAfter(nowMinus12Month) && s.sourceTopic.contains(sensorName))
+        .reverse
   }
 
   private def processRecords(records: Seq[(Option[String], String)]) = {
