@@ -1,19 +1,24 @@
 package ch.seibertec.iot.consumer
 
 import ch.seibertec.iot.config.IotKafkaConfigAcessor
-import ch.seibertec.iot.consumer.stream.{BaseStream, IotKafkaStreamConfiguration}
+import ch.seibertec.iot.consumer.stream.{
+  BaseStream,
+  IotKafkaStreamConfiguration
+}
 import org.apache.kafka.streams.scala.StreamsBuilder
 
-
-class AverageTemperatureStreamBuilder(topic: String, val config: IotKafkaConfigAcessor) extends IotKafkaStreamConfiguration {
+class AverageTemperatureStreamBuilder(topic: String,
+                                      val config: IotKafkaConfigAcessor)
+    extends IotKafkaStreamConfiguration {
   def newStream =
     new AverageTemperatureStream(topic, config)
 }
 
-class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)     extends IotKafkaStreamConfiguration with BaseStream {
+class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
+    extends IotKafkaStreamConfiguration
+    with BaseStream {
 
   override def applicationId: String = "IOTKAFKA_AverageTemperatureStream"
-
 
   override protected def build(builder: StreamsBuilder): Unit = {
 
@@ -22,8 +27,7 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
     builder
       .stream[String, String](topic)
-      .peek((k, v) =>
-        println(s"AverageTemperatureStream start: $k -> $v"))
+      .peek((k, v) => println(s"AverageTemperatureStream start: $k -> $v"))
       .to("AverageTemTopic")
 
   }

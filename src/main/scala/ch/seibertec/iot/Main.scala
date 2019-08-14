@@ -8,7 +8,10 @@ import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
 import akka.http.scaladsl.server.Route
 import akka.stream.ActorMaterializer
 import ch.seibertec.iot.config.{IotKafkaConfig, IotKafkaConfigAcessor}
-import ch.seibertec.iot.consumer.{AverageTemperatureStreamBuilder, IotEventListener}
+import ch.seibertec.iot.consumer.{
+  AverageTemperatureStreamBuilder,
+  IotEventListener
+}
 import com.typesafe.config.Config
 
 object Main extends App {
@@ -22,10 +25,10 @@ object Main extends App {
   private val sensortopicjson = "sensortopicjson"
   IotEventListener(consumerConfig, sensortopicjson)
   new AverageTemperatureStreamBuilder(sensortopicjson, configAccessor).newStream
-  val bindingFuture = Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
+  val bindingFuture =
+    Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
 
 }
-
 
 class WebRoute {
 
@@ -34,16 +37,20 @@ class WebRoute {
   def route: Route =
     path("hello") {
       get {
-        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to akka-http</h1>"))
+        complete(
+          HttpEntity(ContentTypes.`text/html(UTF-8)`,
+                     "<h1>Say hello to akka-http</h1>"))
       }
     } ~
-    pathPrefix("static") {
-      getFromResourceDirectory("static")
-    } ~
-    pathPrefix("data") {
-      path("last") {
-        complete(s""" { "temperature": 23.567, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime.now()}"} """)
+      pathPrefix("static") {
+        getFromResourceDirectory("static")
+      } ~
+      pathPrefix("data") {
+        path("last") {
+          complete(
+            s""" { "temperature": 23.567, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime
+              .now()}"} """)
+        }
       }
-    }
 
 }
