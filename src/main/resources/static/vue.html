@@ -1,0 +1,55 @@
+<html>
+<head>
+    <link rel="stylesheet" href="index.css">
+    <script src="minAjax.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="node_modules/chart.js/dist/Chart.js"></script>
+</head>
+<body>
+
+<!--<div id="app">-->
+<!--    {{ message }}-->
+<!--</div>-->
+
+<!--<form-->
+<!--        id="app"-->
+<!--        @submit="checkForm"-->
+<!--        action="https://vuejs.org/"-->
+<!--        method="post"-->
+<!--&gt;-->
+
+<div id="app">
+
+    <div class="mainTitle">Mega App!!</div>
+    <u><div class="groupTitle">Select sensor</div></u>
+    <label for="sensor">Sensor</label>
+    <select
+            id="sensor"
+            v-model="sensor"
+            name="sensor"
+    >
+        <option v-for="s in sensors">{{ s }}</option>
+    </select>
+
+    <u><div class="groupTitle">Latest values</div></u>
+    <div class="valueTitle">Temperature: {{temp}}{{tempUnit}}</div>
+    <div class="valueTitle">Humidity: {{humidity}} %</div>
+    <div class="valueTitle">Time: {{timestamp}}</div>
+
+    <u><div class="groupTitle">Time series</div></u>
+    <label for="scope">Scope</label>
+    <select
+            id="scope"
+            v-model="scope"
+            name="scope"
+    >
+        <option v-for="s in scopes">{{ s }}</option>
+    </select>
+
+</div>
+
+<canvas id="myChart" width="100" height="100" class="chart"></canvas>
+
+<script src="vue.js"></script>
+</body>
+</html>
