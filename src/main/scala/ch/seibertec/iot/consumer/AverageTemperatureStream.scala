@@ -108,7 +108,7 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
           v.minimumYearly,
           v.maximumYearly
       ))
-      .to("AverageTemTopic")
+      .to("TemperatureStatistics")
 
   }
 

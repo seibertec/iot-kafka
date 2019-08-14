@@ -7,6 +7,7 @@ val streamsavroserde = "io.confluent"              % "kafka-streams-avro-serde" 
 val avroserialzer =  "io.confluent"              % "kafka-avro-serializer"           % "5.2.1"
 val avro = "org.apache.avro"           % "avro"                            % "1.8.2"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.7" % "test"
+val mockedstreams= "com.madewithtea"           %% "mockedstreams"                  % "3.3.0" % "test"
 
 
 
@@ -36,7 +37,7 @@ lazy val root = (project in file("."))
     ),
     avroSettings,
     scalacOptions in (Compile, console) ~= (_.filterNot(Set("-Ywarn-unused:imports", "-Xfatal-warnings"))),
-    libraryDependencies ++= List(akkaHttp, akkaStream, cakesolution, playjson, kafkastreams, streamsavroserde, avroserialzer, avro, scalaTest),
+    libraryDependencies ++= List(akkaHttp, akkaStream, cakesolution, playjson, kafkastreams, streamsavroserde, avroserialzer, avro, scalaTest,mockedstreams),
     resolvers ++=  Seq(Resolver.bintrayRepo("cakesolutions", "maven"), "confluent" at "http://packages.confluent.io/maven/", Resolver.jcenterRepo),
     scalafmtVersion := "1.5.1",
     scalafmtOnCompile in Compile := !sys.env.contains("DISABLE_SCALAFMT_ON_COMPILE"),

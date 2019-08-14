@@ -5,7 +5,8 @@ import java.time.format.DateTimeFormatter
 
 import play.api.libs.json.{Format, JsPath}
 
-case class SensorDataMessage(time: LocalDateTime,
+case class SensorDataMessage(sourceTopic: String,
+                             time: LocalDateTime,
                              data: SensorData,
                              unit: String)
 case class SensorData(temperature: Float, humidity: Float)
@@ -27,7 +28,8 @@ object SensorDataMessage {
   )(SensorData.apply, unlift(SensorData.unapply))
 
   implicit val SensorDataMessageFormat: Format[SensorDataMessage] = (
-    (JsPath \ "Time").format[LocalDateTime] and
+    (JsPath \ "SourceTopic").format[String] and
+      (JsPath \ "Time").format[LocalDateTime] and
       (JsPath \ "AM2301").format[SensorData] and
       (JsPath \ "TempUnit").format[String]
   )(SensorDataMessage.apply, unlift(SensorDataMessage.unapply))
