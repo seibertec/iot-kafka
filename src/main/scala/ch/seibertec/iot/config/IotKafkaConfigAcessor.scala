@@ -2,6 +2,10 @@ package ch.seibertec.iot.config
 
 import akka.actor.ActorSystem
 import com.typesafe.config.Config
+import io.confluent.kafka.serializers.{
+  AbstractKafkaAvroSerDeConfig,
+  KafkaAvroDeserializerConfig
+}
 
 trait IotKafkaConfigAcessor {
   def config: Config
@@ -21,6 +25,12 @@ trait IotKafkaConfigAcessor {
     kafkaConfig.getString("producerMessagesAcknowledge")
   def kafkaEventConsumer: Config = kafkaConfig.getConfig("kafkaEventConsumer")
   def globalStateStoreDirectory: String = kafkaConfig.getString("storeBasePath")
+
+  def schemaRegistry: Map[String, String] =
+    scala.Predef.Map(
+      AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG -> schemaRegistryUrl,
+      KafkaAvroDeserializerConfig.SPECIFIC_AVRO_READER_CONFIG -> true.toString
+    )
 
 }
 

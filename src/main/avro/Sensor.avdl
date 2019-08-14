@@ -6,6 +6,7 @@ protocol SensorDataProtocol {
   }
 
   record SensorData {
+    union { null, string}  sensorDate = null;
     union { null, int}  day = null;
     union { null, int}  month = null;
     union { null, int}  year = null;
@@ -16,9 +17,7 @@ protocol SensorDataProtocol {
 
 
   record TemperatureEvent {
-    union { null, int}  day = null;
-    union { null, int}  month = null;
-    union { null, int}  year = null;
+    union { null, string}  sensorDate = null;
     union { null, Average}  averageMonthly = null;
     union { null, SensorData}  minimumDaily = null;
     union { null, SensorData}  maximumDaily = null;

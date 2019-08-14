@@ -52,8 +52,8 @@ trait KafkaStreamConfiguration {
 
   def applicationId: String
 
-  val maxPoll: java.lang.Integer = 300
-  val maxPollMs: java.lang.Integer = 900000
+  val maxPoll: java.lang.Integer = 30
+  val maxPollMs: java.lang.Integer = 900
   val cacheSizeInBytes: java.lang.Long = 0L
 
   import org.apache.kafka.streams.StreamsConfig

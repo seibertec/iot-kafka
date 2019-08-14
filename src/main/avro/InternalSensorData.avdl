@@ -5,6 +5,7 @@ protocol InternalSensorData {
 
   record AggregatedSensorData {
 
+    union { null, string}  lastSensorDate = null;
     array<ch.seibertec.iot.events.SensorData> sensorDataOfMonth;
     union { null, int}  month = null;
     union { null, int}  year = null;

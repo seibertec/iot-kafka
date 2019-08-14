@@ -10,7 +10,8 @@ import akka.stream.ActorMaterializer
 import ch.seibertec.iot.config.{IotKafkaConfig, IotKafkaConfigAcessor}
 import ch.seibertec.iot.consumer.{
   AverageTemperatureStreamBuilder,
-  IotEventListener
+  IotEventListener,
+  IotStatisticsListener
 }
 import com.typesafe.config.Config
 
@@ -21,9 +22,12 @@ object Main extends App {
 
   val configAccessor: IotKafkaConfigAcessor = IotKafkaConfig()
   val consumerConfig: Config = configAccessor.kafkaEventConsumer
-  private val sensortopicjson = "sensor"
-  IotEventListener(consumerConfig, sensortopicjson)
-  new AverageTemperatureStreamBuilder(sensortopicjson, configAccessor).newStream
+  private val sensorTopic = "sensor"
+  private val statisticsTopic = "TemperatureStatistics"
+
+  IotEventListener(consumerConfig, sensorTopic)
+  IotStatisticsListener(consumerConfig, statisticsTopic)
+  new AverageTemperatureStreamBuilder(sensorTopic, configAccessor).newStream
   val bindingFuture =
     Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
 
