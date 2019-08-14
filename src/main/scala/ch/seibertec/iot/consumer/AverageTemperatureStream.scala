@@ -36,8 +36,10 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   implicit def convertToSensorData(
       sensorDataMessage: SensorDataMessage): SensorData = {
+    val dateTimeString =
+      SensorDataMessage.toLocalDateTimeString(sensorDataMessage.time)
     SensorData(
-      Some(SensorDataMessage.toLocalDateTimeString(sensorDataMessage.time)),
+      Some(dateTimeString),
       Some(sensorDataMessage.time.getDayOfMonth),
       Some(sensorDataMessage.time.getMonthValue),
       Some(sensorDataMessage.time.getYear),
@@ -49,7 +51,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMinimumYearly(accumulatorForDate: AggregatedSensorData,
                        sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData) //TODO fix this code
     if (accumulatorForDate.minimumYearly.exists(m =>
           m.temperature.get.toFloat <= sensorData.temperature.get.toFloat))
       accumulatorForDate.minimumYearly
@@ -57,7 +58,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMaximumYearly(accumulatorForDate: AggregatedSensorData,
                        sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData)//TODO fix this code
     if (accumulatorForDate.maximumYearly.exists(m =>
           m.temperature.get.toFloat > sensorData.temperature.get.toFloat))
       accumulatorForDate.maximumYearly
@@ -65,7 +65,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMinimumMonthly(accumulatorForDate: AggregatedSensorData,
                         sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData)//TODO fix this code
     if (accumulatorForDate.minimumMonthly.exists(m =>
           m.temperature.get.toFloat <= sensorData.temperature.get.toFloat))
       accumulatorForDate.minimumMonthly
@@ -73,7 +72,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMaximumMonthly(accumulatorForDate: AggregatedSensorData,
                         sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData)//TODO fix this code
     if (accumulatorForDate.minimumMonthly.exists(m =>
           m.temperature.get.toFloat >= sensorData.temperature.get.toFloat))
       accumulatorForDate.minimumMonthly
@@ -81,7 +79,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMinimumDaily(accumulatorForDate: AggregatedSensorData,
                       sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData)//TODO fix this code
     if (accumulatorForDate.minimumDaily.exists(m =>
           m.temperature.get.toFloat <= sensorData.temperature.get.toFloat))
       accumulatorForDate.minimumDaily
@@ -89,7 +86,6 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
 
   def newMaximumDaily(accumulatorForDate: AggregatedSensorData,
                       sensorData: SensorData): Option[SensorData] =
-//    Some(sensorData)//TODO fix this code
     if (accumulatorForDate.maximumDaily.exists(m =>
           m.temperature.get.toFloat >= sensorData.temperature.get.toFloat))
       accumulatorForDate.maximumDaily
@@ -121,6 +117,8 @@ class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
       })
       .filter((k, v) =>
         v.year.isDefined && v.month.isDefined && v.day.isDefined && v.hour.isDefined && v.minute.isDefined && v.temperature.isDefined)
+      .peek((k, v) =>
+        logger.info(s"AverageTemperatureStream after convert: $k -> $v"))
       .groupByKey
       .aggregate(AggregatedSensorData(sensorDataOfMonth = Seq.empty))(
         (k, v, acc) => {

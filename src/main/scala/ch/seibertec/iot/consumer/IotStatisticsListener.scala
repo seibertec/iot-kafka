@@ -15,7 +15,6 @@ import cakesolutions.kafka.akka.KafkaConsumerActor.{Confirm, Subscribe}
 import cakesolutions.kafka.akka.{ConsumerRecords, KafkaConsumerActor}
 import ch.seibertec.iot.config.IotKafkaConfig
 import ch.seibertec.iot.consumer.util.TypedKafkaAvroDeserializer
-import ch.seibertec.iot.domain.SensorDataMessage
 import ch.seibertec.iot.events.TemperatureEvent
 import com.typesafe.config.Config
 import org.apache.kafka.clients.consumer.OffsetResetStrategy

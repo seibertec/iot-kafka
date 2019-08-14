@@ -3,7 +3,12 @@ package ch.seibertec.iot
 import java.time.LocalDateTime
 
 import akka.event.Logging
-import akka.http.scaladsl.model.{ContentTypes, HttpEntity, StatusCode, StatusCodes}
+import akka.http.scaladsl.model.{
+  ContentTypes,
+  HttpEntity,
+  StatusCode,
+  StatusCodes
+}
 import akka.http.scaladsl.server.Route
 
 class WebRoute {
@@ -28,24 +33,31 @@ class WebRoute {
               s""" { "temperature": 23.567, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime
                 .now()}"} """)
           } ~
-          path("timeseries") {
-            parameter('scope) {
-              case "last 12 month" =>
-                complete(
-                  s"""[
-                        {  "temperature": 21, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 21.5, "tempUnit": "°C", "humidity": 79.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 22, "tempUnit": "°C", "humidity": 78.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 23, "tempUnit": "°C", "humidity": 77.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 24.567, "tempUnit": "°C", "humidity": 76.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 25.567, "tempUnit": "°C", "humidity": 75.3, "timestamp": "${LocalDateTime.now()}"},
-                        {  "temperature": 26.567, "tempUnit": "°C", "humidity": 74.3, "timestamp": "${LocalDateTime.now()}"}
+            path("timeseries") {
+              parameter('scope) {
+                case "last 12 month" =>
+                  complete(
+                    s"""[
+                        {  "temperature": 21, "tempUnit": "°C", "humidity": 80.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 21.5, "tempUnit": "°C", "humidity": 79.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 22, "tempUnit": "°C", "humidity": 78.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 23, "tempUnit": "°C", "humidity": 77.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 24.567, "tempUnit": "°C", "humidity": 76.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 25.567, "tempUnit": "°C", "humidity": 75.3, "timestamp": "${LocalDateTime
+                      .now()}"},
+                        {  "temperature": 26.567, "tempUnit": "°C", "humidity": 74.3, "timestamp": "${LocalDateTime
+                      .now()}"}
                       ]"""
-                )
-              case x =>
-                complete(StatusCodes.BadRequest, s"scope '$x' not supported!")
+                  )
+                case x =>
+                  complete(StatusCodes.BadRequest, s"scope '$x' not supported!")
+              }
             }
-          }
         }
     }
 }
