@@ -19,7 +19,6 @@ object Main extends App {
   implicit val actorSystem: ActorSystem = ActorSystem("lcm-service")
   implicit val materializer = ActorMaterializer()
 
-  println("Hello World!")
   val configAccessor: IotKafkaConfigAcessor = IotKafkaConfig()
   val consumerConfig: Config = configAccessor.kafkaEventConsumer
   private val sensortopicjson = "sensortopicjson"
@@ -27,6 +26,11 @@ object Main extends App {
   new AverageTemperatureStreamBuilder(sensortopicjson, configAccessor).newStream
   val bindingFuture =
     Http().bindAndHandle(new WebRoute().route, "localhost", 8090)
+
+  sys.ShutdownHookThread {
+    println("Shutting ActorSysten")
+    actorSystem.terminate()
+  }
 
 }
 

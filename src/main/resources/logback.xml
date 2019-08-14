@@ -46,7 +46,7 @@
   </appender>
 
 
-  <root level="${LOG_LEVEL:-INFO}">
+  <root level="${LOG_LEVEL:-DEBUG}">
     <appender-ref ref="STDOUT"/>
   </root>
 
