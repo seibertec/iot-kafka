@@ -1,15 +1,25 @@
 package ch.seibertec.iot.consumer.stream
 
 import java.util
-import java.util.Properties
+import java.util.{Collections, Properties}
 
 import ch.seibertec.iot.config.IotKafkaConfigAcessor
-
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.streams.processor.WallclockTimestampExtractor
 import org.apache.kafka.clients.producer.ProducerConfig
 import org.apache.kafka.streams.state.RocksDBConfigSetter
 import org.rocksdb.{BlockBasedTableConfig, Options}
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
+import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+import org.apache.avro.specific.SpecificRecord
+
+
+case class SchemaRegistryConfig(url: String)
+class AvroSerde[T <: SpecificRecord](keySerde: Boolean = false)(implicit cfg: SchemaRegistryConfig) extends SpecificAvroSerde[T] {
+  configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, cfg.url), keySerde)
+}
+
+
 
 class CustomRocksDBConfig extends RocksDBConfigSetter {
 
@@ -34,6 +44,10 @@ trait KafkaStreamConfiguration {
   def basePath: String
   def listenPort: String
   def enableConfluentInterceptors: Boolean
+
+  lazy implicit val schemaRegistryConfig: SchemaRegistryConfig =
+    SchemaRegistryConfig(schemaRegistryUrl)
+
 
   def applicationId: String
 
