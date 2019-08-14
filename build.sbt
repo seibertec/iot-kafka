@@ -44,6 +44,8 @@ lazy val root = (project in file("."))
     scalafmtVersion := "1.5.1",
     scalafmtOnCompile in Compile := !sys.env.contains("DISABLE_SCALAFMT_ON_COMPILE"),
     scalafmtTestOnCompile in Compile := !sys.env.contains("DISABLE_SCALAFMT_ON_COMPILE"),
+    fork in run := true,
+    trapExit := false // in order to avoid "hanging around" after the application exits
   )
 
 
