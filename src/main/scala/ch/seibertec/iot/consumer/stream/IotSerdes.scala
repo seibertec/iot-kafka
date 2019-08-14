@@ -6,7 +6,7 @@ import org.apache.kafka.common.serialization.Serde
 
 trait IotSerdes {
   implicit val schemaRegistryConfig: SchemaRegistryConfig
-  implicit lazy val SerdeTemperatureTopic: Serde[TemperatureEvent] =
+  implicit lazy val SerdeTemperatureEvent: Serde[TemperatureEvent] =
     new AvroSerde[TemperatureEvent]
   implicit lazy val SerdeSensorData: Serde[SensorData] =
     new AvroSerde[SensorData]

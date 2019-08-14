@@ -4,7 +4,8 @@ import java.util.Properties
 
 import org.apache.kafka.common.serialization.Serde
 import ch.seibertec.iot.config.{ConfigSupport, IotKafkaConfigAcessor}
-import ch.seibertec.iot.events.TemperatureEvent
+import ch.seibertec.iot.events.internal.AggregatedSensorData
+import ch.seibertec.iot.events.{SensorData, TemperatureEvent}
 import ch.seibertec.util.MockedStreams
 import org.scalatest.{Matchers, WordSpec}
 
@@ -18,7 +19,7 @@ class AverageTemperatureStreamTest
   import org.apache.kafka.streams.scala.Serdes._
   import ch.seibertec.iot.consumer.stream.MockedSerdes._
   "AverageTemperatureStreamTest" must {
-    "map calculate daily min" ignore {
+    "map calculate daily min" in {
 
       val mstreams = MockedStreams()
         .topology { builder =>
@@ -44,7 +45,12 @@ class AverageTemperatureStreamTest
 
 class MockedAverageTemperatureStreamBuilder() {
 
-  def stream(config: IotKafkaConfigAcessor) =
+  def stream(config: IotKafkaConfigAcessor)(
+      implicit
+      sensorDataSerde: Serde[SensorData],
+      temperatureEventSerde: Serde[TemperatureEvent],
+      aggregatedSensorDataSerde: Serde[AggregatedSensorData]
+  ) =
     new AverageTemperatureStream("sensortopicjson", config) {
       override def start(streamingConfig: Properties): Unit = {}
     }

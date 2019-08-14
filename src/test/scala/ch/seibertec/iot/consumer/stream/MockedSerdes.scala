@@ -2,14 +2,12 @@ package ch.seibertec.iot.consumer.stream
 
 import java.util.Collections
 
-import ch.seibertec.iot.events.TemperatureEvent
+import ch.seibertec.iot.events.internal.AggregatedSensorData
+import ch.seibertec.iot.events.{SensorData, TemperatureEvent}
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.avro.specific.SpecificRecord
-import io.confluent.kafka.schemaregistry.client.{
-  MockSchemaRegistryClient,
-  SchemaRegistryClient
-}
+import io.confluent.kafka.schemaregistry.client.{MockSchemaRegistryClient, SchemaRegistryClient}
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes.StringSerde
 
@@ -26,15 +24,21 @@ object MockedSerdes {
 
   implicit val schemaRegistryConfig: SchemaRegistryConfig =
     SchemaRegistryConfig("UNUSED")
-
   implicit lazy val schemaRegistryClient: MockSchemaRegistryClient =
     new MockSchemaRegistryClient()
 
-  schemaRegistryClient.register("TemperatureTopic-value",
+  schemaRegistryClient.register("TemperatureEvent-value",
                                 TemperatureEvent.SCHEMA$)
+  schemaRegistryClient.register("SensorData-value", SensorData.SCHEMA$)
+  schemaRegistryClient.register("AggregatedSensorDatat-value",
+                                AggregatedSensorData.SCHEMA$)
 
-  implicit lazy val TemperatureTopicSerde: Serde[TemperatureEvent] =
+  implicit lazy val TemperatureEventSerde: Serde[TemperatureEvent] =
     new MockAvroSerde[TemperatureEvent]
+  implicit lazy val SerdeAggregatedSensorData: Serde[AggregatedSensorData] =
+    new MockAvroSerde[AggregatedSensorData]
+  implicit lazy val SensorDataSerde: Serde[SensorData] =
+    new MockAvroSerde[SensorData]
 
   implicit val stringSerde = new StringSerde
 

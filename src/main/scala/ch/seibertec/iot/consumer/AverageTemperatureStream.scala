@@ -9,18 +9,24 @@ import ch.seibertec.iot.consumer.stream.{
 import ch.seibertec.iot.domain.SensorDataMessage
 import ch.seibertec.iot.events.{Average, SensorData, TemperatureEvent}
 import ch.seibertec.iot.events.internal.AggregatedSensorData
+import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.streams.scala.StreamsBuilder
 import play.api.libs.json.Json
 
 class AverageTemperatureStreamBuilder(topic: String,
                                       val config: IotKafkaConfigAcessor)
-    extends IotKafkaStreamConfiguration {
+    extends IotKafkaStreamConfiguration
+    with IotSerdes {
   def newStream =
     new AverageTemperatureStream(topic, config)
 }
 
-class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)
-    extends IotKafkaStreamConfiguration
+class AverageTemperatureStream(topic: String, val config: IotKafkaConfigAcessor)(
+    implicit
+    sensorData: Serde[SensorData],
+    temperatureEvent: Serde[TemperatureEvent],
+    aggregatedSensorData: Serde[AggregatedSensorData]
+) extends IotKafkaStreamConfiguration
     with BaseStream
     with IotSerdes {
 
