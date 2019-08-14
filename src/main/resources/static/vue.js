@@ -52,32 +52,44 @@ var app = new Vue({
                     var result = JSON.parse(response);
                     var ctx = document.getElementById('myChart');
                     var myChart = new Chart(ctx, {
-                        type: 'bar',
+                        type: 'line',
                         data: {
                             labels: result.map(x => x.timestamp),
-                            datasets: [{
-                                label: 'Temperature in °C',
+                            datasets: [
+                                {
+                                    label: 'Low Temperature in °C',
+                                    data: result.map(x => x.temperature - 5),
+                                    borderColor: 'rgba(27,66,255,0.75)',
+                                    fill: origin,
+                                    // borderWidth: 1
+                                },
+                                {
+                                label: 'Medium Temperature in °C',
                                 data: result.map(x => x.temperature),
-                                // backgroundColor: [
-                                //     'rgba(255, 99, 132, 0.2)',
-                                //     'rgba(54, 162, 235, 0.2)',
-                                //     'rgba(255, 206, 86, 0.2)',
-                                //     'rgba(75, 192, 192, 0.2)',
-                                //     'rgba(153, 102, 255, 0.2)',
-                                //     'rgba(255, 159, 64, 0.2)'
-                                // ],
-                                // borderColor: [
-                                //     'rgba(255, 99, 132, 1)',
-                                //     'rgba(54, 162, 235, 1)',
-                                //     'rgba(255, 206, 86, 1)',
-                                //     'rgba(75, 192, 192, 1)',
-                                //     'rgba(153, 102, 255, 1)',
-                                //     'rgba(255, 159, 64, 1)'
-                                // ],
-                                borderWidth: 1
-                            }]
+                                fill: false,
+                                borderColor: 'rgba(25,255,42,0.95)',
+                                // borderWidth: 1
+                                },
+                                {
+                                label: 'High Temperature in °C',
+                                data: result.map(x => x.temperature + 5),
+                                borderColor: 'rgb(255,0,26)',
+                                backgroundColor: 'rgba(255,77,49,0.27)',
+                                fill: 0
+                                // borderWidth: 1
+                                },
+                            ]
                         },
                         options: {
+                            maintainAspectRatio: false,
+                            layout: {
+                                padding: {
+                                    left: 10,
+                                    right: 10,
+                                    top: 10,
+                                    bottom: 10
+                                }
+                            },
                             scales: {
                                 yAxes: [{
                                     ticks: {
