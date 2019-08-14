@@ -1,5 +1,3 @@
 package ch.seibertec.iot.domain
 
-class SensorDataMessageTest extends org.scalatest.FunSuite {
-
-}
+class SensorDataMessageTest extends org.scalatest.FunSuite {}

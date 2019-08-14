@@ -13,13 +13,15 @@ import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.avro.specific.SpecificRecord
 
-
 case class SchemaRegistryConfig(url: String)
-class AvroSerde[T <: SpecificRecord](keySerde: Boolean = false)(implicit cfg: SchemaRegistryConfig) extends SpecificAvroSerde[T] {
-  configure(Collections.singletonMap(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, cfg.url), keySerde)
+class AvroSerde[T <: SpecificRecord](keySerde: Boolean = false)(
+    implicit cfg: SchemaRegistryConfig)
+    extends SpecificAvroSerde[T] {
+  configure(Collections.singletonMap(
+              AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG,
+              cfg.url),
+            keySerde)
 }
-
-
 
 class CustomRocksDBConfig extends RocksDBConfigSetter {
 
@@ -47,7 +49,6 @@ trait KafkaStreamConfiguration {
 
   lazy implicit val schemaRegistryConfig: SchemaRegistryConfig =
     SchemaRegistryConfig(schemaRegistryUrl)
-
 
   def applicationId: String
 
