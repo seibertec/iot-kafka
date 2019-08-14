@@ -1,27 +1,30 @@
 @namespace("ch.seibertec.iot.events")
-protocol SensorData {
+protocol SensorDataProtocol {
 
   record Average {
     union { null, string}  temperature = null;
   }
 
-  record MinMaxTemperature {
+  record SensorData {
     union { null, int}  day = null;
     union { null, int}  month = null;
     union { null, int}  year = null;
+    union { null, int}  hour = null;
+    union { null, int}  minute = null;
     union { null, string}  temperature = null;
   }
 
-  record TemperatureTopic {
+
+  record TemperatureEvent {
     union { null, int}  day = null;
     union { null, int}  month = null;
     union { null, int}  year = null;
     union { null, Average}  averageMonthly = null;
-    union { null, MinMaxTemperature}  minimumDaily = null;
-    union { null, MinMaxTemperature}  maximumDaily = null;
-    union { null, MinMaxTemperature}  minimumMonthly = null;
-    union { null, MinMaxTemperature}  maximumMonthly = null;
-    union { null, MinMaxTemperature}  minimumYearly = null;
-    union { null, MinMaxTemperature}  maximumYearly = null;
+    union { null, SensorData}  minimumDaily = null;
+    union { null, SensorData}  maximumDaily = null;
+    union { null, SensorData}  minimumMonthly = null;
+    union { null, SensorData}  maximumMonthly = null;
+    union { null, SensorData}  minimumYearly = null;
+    union { null, SensorData}  maximumYearly = null;
   }
 }

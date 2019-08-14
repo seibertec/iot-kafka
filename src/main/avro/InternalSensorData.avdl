@@ -3,28 +3,21 @@ protocol InternalSensorData {
 
   import idl "./Sensor.avdl";
 
-  record SensorData {
-    union { null, int}  day = null;
-    union { null, int}  month = null;
-    union { null, int}  year = null;
-    union { null, string}  temperature = null;
-  }
-
   record AggregatedSensorData {
 
-    array<SensorData> sensorDataOfMonth;
+    array<ch.seibertec.iot.events.SensorData> sensorDataOfMonth;
     union { null, int}  month = null;
     union { null, int}  year = null;
     union { null, int}  day = null;
 
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumYearly = null;
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumYearly = null;
+    union { null, ch.seibertec.iot.events.SensorData}  minimumYearly = null;
+    union { null, ch.seibertec.iot.events.SensorData}  maximumYearly = null;
 
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumMonthly = null;
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumMonthly = null;
+    union { null, ch.seibertec.iot.events.SensorData}  minimumMonthly = null;
+    union { null, ch.seibertec.iot.events.SensorData}  maximumMonthly = null;
 
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  minimumDaily = null;
-    union { null, ch.seibertec.iot.events.MinMaxTemperature}  maximumDaily = null;
+    union { null, ch.seibertec.iot.events.SensorData}  minimumDaily = null;
+    union { null, ch.seibertec.iot.events.SensorData}  maximumDaily = null;
     union { null, string}  averageTemperatureOfMonth = null;
   }
 
