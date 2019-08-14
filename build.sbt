@@ -1,5 +1,7 @@
+val akkaVersion = "2.5.23"
+
 val akkaHttp = "com.typesafe.akka"         %% "akka-http"                      % "10.1.9"
-val akkaStream = "com.typesafe.akka"        %% "akka-stream"                   % "2.5.23"
+val akkaStream = "com.typesafe.akka"        %% "akka-stream"                   % akkaVersion
 val cakesolution = "net.cakesolutions"         %% "scala-kafka-client-akka"        % "2.1.0"
 val playjson=   "ai.x"                      %% "play-json-extensions"           % "0.40.2"
 val kafkastreams =     "org.apache.kafka"          %% "kafka-streams-scala"     % "2.2.1"
@@ -7,9 +9,8 @@ val streamsavroserde = "io.confluent"              % "kafka-streams-avro-serde" 
 val avroserialzer =  "io.confluent"              % "kafka-avro-serializer"           % "5.2.1"
 val avro = "org.apache.avro"           % "avro"                            % "1.8.2"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.0.7" % "test"
-
-
-
+val slf4jAkka = "com.typesafe.akka"         %% "akka-slf4j"                     % akkaVersion
+val logBack = "ch.qos.logback"            % "logback-classic"                 % "1.2.3"
 
 lazy val root = (project in file("."))
   .settings(
@@ -36,7 +37,7 @@ lazy val root = (project in file("."))
     ),
     avroSettings,
     scalacOptions in (Compile, console) ~= (_.filterNot(Set("-Ywarn-unused:imports", "-Xfatal-warnings"))),
-    libraryDependencies ++= List(akkaHttp, akkaStream, cakesolution, playjson, kafkastreams, streamsavroserde, avroserialzer, avro, scalaTest),
+    libraryDependencies ++= List(akkaHttp, akkaStream, cakesolution, playjson, kafkastreams, streamsavroserde, avroserialzer, avro, scalaTest, slf4jAkka, logBack),
     resolvers ++=  Seq(Resolver.bintrayRepo("cakesolutions", "maven"), "confluent" at "http://packages.confluent.io/maven/", Resolver.jcenterRepo),
     scalafmtVersion := "1.5.1",
     scalafmtOnCompile in Compile := !sys.env.contains("DISABLE_SCALAFMT_ON_COMPILE"),

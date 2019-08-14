@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true">
+
+  <contextName>iot-kafka</contextName>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <if condition='property("LOG_FORMAT").contains("JSON")'>
+      <then>
+        <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+          <providers>
+            <message/>
+            <mdc/>
+            <logstashMarkers/>
+            <pattern>
+              <pattern>
+                {
+                "@timestamp": "%date{yyyy-MM-dd'T'HH:mm:ss.SSS'Z'}",
+                "level": "%level",
+                "class": "%replace(%logger.%M){'\\.\\?+|\\$*\\.\\$.+\\$+\\d*|\\$',''}",
+                "thread": "%thread",
+                "application": "lcm"
+                }
+              </pattern>
+            </pattern>
+            <arguments/>
+            <stackTrace>
+              <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <maxLength>2048</maxLength>
+                <shortenedClassNameLength>20</shortenedClassNameLength>
+                <rootCauseFirst>true</rootCauseFirst>
+              </throwableConverter>
+            </stackTrace>
+          </providers>
+        </encoder>
+      </then>
+      <else>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+          <pattern>
+            [%blue(%date{ISO8601})][%highlight(%-5level)][%magenta(%replace(%logger.%M){'\.\?+|\$*\.\$.+\$+\d*|\$',''})] - %msg %blue(%marker) [%cyan(%thread)] %n
+          </pattern>
+        </encoder>
+      </else>
+    </if>
+  </appender>
+
+
+  <root level="${LOG_LEVEL:-INFO}">
+    <appender-ref ref="STDOUT"/>
+  </root>
+
+</configuration>
