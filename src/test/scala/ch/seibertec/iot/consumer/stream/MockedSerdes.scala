@@ -4,10 +4,11 @@ import java.util.Collections
 
 import ch.seibertec.iot.events.internal.AggregatedSensorData
 import ch.seibertec.iot.events.{SensorData, TemperatureEvent}
+import ch.seibertec.iot.stream.MockSchemaRegistryClient
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
 import org.apache.avro.specific.SpecificRecord
-import io.confluent.kafka.schemaregistry.client.{MockSchemaRegistryClient, SchemaRegistryClient}
+import io.confluent.kafka.schemaregistry.client.SchemaRegistryClient
 import org.apache.kafka.common.serialization.Serde
 import org.apache.kafka.common.serialization.Serdes.StringSerde
 
@@ -30,7 +31,7 @@ object MockedSerdes {
   schemaRegistryClient.register("TemperatureEvent-value",
                                 TemperatureEvent.SCHEMA$)
   schemaRegistryClient.register("SensorData-value", SensorData.SCHEMA$)
-  schemaRegistryClient.register("AggregatedSensorDatat-value",
+  schemaRegistryClient.register("AggregatedSensorData-value",
                                 AggregatedSensorData.SCHEMA$)
 
   implicit lazy val TemperatureEventSerde: Serde[TemperatureEvent] =
