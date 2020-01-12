@@ -1,0 +1,41 @@
+version: '3.3'
+
+services:
+
+  iot-kafka:
+    image: qnapnas/qiot-kafka_amd64:latest
+    hostname: iot-kafka
+    container_name: iot-kafka
+    ports:
+      - "22181:2181"
+      - "29092:9092"
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+      KAFKA_HOME: /opt/kafka_2.11-0.8.2.1
+      KAFKA_VERSION: "0.8.2.1"
+      PATH: "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      SCALA_VERSION: "2.11"
+
+  iot-kafka-connect:
+    image: seibertec/kafka-connect-custom-mqtt:latest
+    hostname: iot-kafka-connect
+    container_name: iot-kafka-connect
+    ports:
+      - "28083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "theothernas:29092"
+      CONNECT_REST_ADVERTISED_HOST_NAME: connect
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: compose-connect-group
+      CONNECT_CONFIG_STORAGE_TOPIC: docker-connect-configs
+      CONNECT_OFFSET_STORAGE_TOPIC: docker-connect-offsets
+      CONNECT_STATUS_STORAGE_TOPIC: docker-connect-status
+      CONNECT_KEY_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
+      CONNECT_PLUGIN_PATH: '/usr/share/java,/etc/kafka-connect/jars,/etc/kafka-connect/lenses'
+      CONNECT_CONFLUENT_TOPIC_REPLICATION_FACTOR: 1
