@@ -1,4 +1,7 @@
+import Vue from 'vue'
+import vuetify from '@/plugins/vuetify' // path to vuetify export
 var app = new Vue({
+    vuetify,
     el: '#app',
     data: {
         errors: [],
@@ -53,7 +56,7 @@ var app = new Vue({
                 //CALLBACK FUNCTION with RESPONSE as argument
                 success: function(response){
                     var result = JSON.parse(response);
-                    var ctx = document.getElementById('myChart');
+                    var ctx = document.getElementById('myChart')
                     var myChart = new Chart(ctx, {
                         type: 'line',
                         data: {
@@ -62,8 +65,9 @@ var app = new Vue({
                                 {
                                     label: 'Temperature in °C',
                                     data: result.map(x => x.AM2301.Temperature),
-                                    borderColor: 'rgba(27,66,255,0.75)',
-                                    fill: origin,
+                                    borderColor: '#0066ff',
+                                    fill: false,
+                                    backgroundColor:'#0066ff',
                                     // borderWidth: 1
                                 },
                                 // {
@@ -115,6 +119,7 @@ var app = new Vue({
 
 
                 },
+
                 errorCallback: function() {
                     console.log('PENG!')
                 }
@@ -127,4 +132,5 @@ var app = new Vue({
         // `this` points to the vm instance
         console.log('a is: ' + this.a)
     }
-});
+}).$mount('#app');
+
