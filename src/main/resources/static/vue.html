@@ -20,9 +20,9 @@
 
 <div id="app">
 
-    <div class="mainTitle">Mega App!!</div>
+    <div class="mainTitle">Sensor temperature overview</div>
     <u><div class="groupTitle">Select sensor</div></u>
-    <label for="sensor">Sensor</label>
+    <label style="size:20px" for="sensor">Sensor</label>
     <select
             id="sensor"
             v-model="sensor"
@@ -30,14 +30,13 @@
     >
         <option v-for="s in sensors">{{ s }}</option>
     </select>
-
     <u><div class="groupTitle">Latest values</div></u>
     <div class="valueTitle">Temperature: {{temp}} °{{tempUnit}}</div>
     <div class="valueTitle">Humidity: {{humidity}} %</div>
     <div class="valueTitle">Time: {{timestamp}}</div>
 
     <u><div class="groupTitle">Time series</div></u>
-    <label for="scope">Scope</label>
+    <label style="size:20px" for="scope">Scope</label>
     <select
             id="scope"
             v-model="scope"

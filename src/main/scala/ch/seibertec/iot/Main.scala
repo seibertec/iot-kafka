@@ -1,7 +1,6 @@
 package ch.seibertec.iot
 
 import java.time.{LocalDateTime, LocalTime}
-
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.{ContentTypes, HttpEntity}
